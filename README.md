@@ -1,73 +1,81 @@
 
-# 🏦 Bank Management System in Python
+# 🏦 Python Bank Management System
 
-A **modular, terminal-based Bank Management System** built using Python. It simulates real-world banking operations such as account creation, authentication, transactions (credit/debit), and fund transfers — all while demonstrating clean software design principles and user interaction.
+A **modular, file-based terminal application** for managing bank operations. This project supports creating, updating, authenticating, saving, and deleting bank accounts, along with generating account statements and transaction histories — all securely handled in Python.
 
 ---
 
 ## 📚 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [System Architecture](#system-architecture)
-- [Modules Explained](#modules-explained)
-- [Getting Started](#getting-started)
-- [How to Use](#how-to-use)
-- [Security](#security)
-- [Known Limitations](#known-limitations)
-- [Future Enhancements](#future-enhancements)
-- [License](#license)
+- [📌 Overview](#overview)
+- [✨ Features](#features)
+- [🧱 Folder Structure](#folder-structure)
+- [🧩 Modules Explained](#modules-explained)
+- [🚀 Getting Started](#getting-started)
+- [🎮 How to Use](#how-to-use)
+- [🔐 Security](#security)
+- [⚠️ Known Limitations](#known-limitations)
+- [💡 Future Enhancements](#future-enhancements)
+- [📜 License](#license)
+- [👨‍💻 Author](#author)
 
 ---
 
 ## 📌 Overview
 
-This project is a **console-based banking system** created for educational purposes, personal experimentation, and as a showcase of Python programming with modular design.
-
-No external dependencies or frameworks are used — everything is written in core Python with a focus on logic, modularity, and basic validation.
+This project is a **fully terminal-driven Bank Management System** designed with modular architecture, persistence through CSV, and secure operations. Ideal for learning file operations, user authentication, modular programming, and system design in Python.
 
 ---
 
 ## ✨ Features
 
-- ✅ **Create New Bank Accounts**
-- 🔐 **Secure Authentication** with password and master key
-- 💰 **Credit/Debit Transactions** with input validation
-- 🔍 **Balance Enquiry**
-- 🔁 **Transfer Funds** between accounts
-- 📄 **View All Accounts** (protected by Master Key)
-- 👤 **View Specific Account Details**
-- 🧩 **Modular Design** for easy maintenance and scalability
+- 🆕 Create New Bank Accounts with full details
+- 🔐 Secure Password-Based Authentication
+- 🔁 Deposit, Withdraw, and Transfer Funds
+- 🔍 View Account Balance and Details
+- 📂 Save, Load, and Delete Account Files
+- 📑 Print and Save Bank Statements
+- 🧾 View and Save Transaction Histories
+- 🛡️ Admin Mode for full data access via Master Key
+- 🗑️ Account Deletion (with file removal)
+- 🔄 Modular design with reusable utilities
+- 🔒 Secure Encryption and Decryption for Password Handling
 
 ---
 
-## 🏗️ System Architecture
-
-This system is **modular**, meaning it separates concerns across multiple files:
-
+## 🧱 Folder Structure
 ```
-banking-system/
-├── main.py               # Program entry point
-├── bank_menu.py          # Interactive menu system
-├── account_ops.py        # Account creation and user authentication
-├── transactions.py       # Handles credit and debit operations
-├── bank_core.py          # Bank class definition (business logic)
-├── constants.py          # Global data and configurations
-└── README.md             # Project documentation
+Banking System/
+├── accounts/                # Stores saved account files
+├── bank statements/         # Stores printed statements
+├── transaction history/     # Stores transaction logs
+├── main.py                  # Entry point of the system
+├── bank_menu.py             # Main menu system
+├── account_ops.py           # Create/delete accounts
+├── bank_core.py             # Bank class and logic
+├── transactions.py          # Credit/debit/transfer logic
+├── utils.py                 # Utilities for email, UID, etc.
+├── auth.py                  # Authentication and verification
+├── load.py                  # File loading functions
+├── constants.py             # Master key using dotenv
+└── README.md
 ```
 
 ---
 
-## 📦 Modules Explained
+## 🧩 Modules Explained
 
-| Module         | Purpose |
-|----------------|---------|
-| `main.py`      | Runs the banking system, handles flow control |
-| `bank_menu.py` | Menu interface with all banking operations |
-| `account_ops.py` | Contains `create_accounts` and `authenticator` functions |
-| `transactions.py` | Manages `debit_balance` and `credit_balance` logic |
-| `bank_core.py` | Defines the `Bank` class with methods like `credit`, `debit`, etc. |
-| `constants.py` | Stores shared data and sensitive values like `__master_key` |
+| Module           | Description                                              |
+|------------------|----------------------------------------------------------|
+| `main.py`        | Entry point of the application                           |
+| `bank_menu.py`   | Menu-driven routing of operations                        |
+| `account_ops.py` | Account creation and deletion                            |
+| `bank_core.py`   | `Bank` class with debit, credit, save, delete, print     |
+| `transactions.py`| Core transaction logic (debit/credit)                    |
+| `utils.py`       | Account number generation, email validation              |
+| `auth.py`        | User and master key authentication                       |
+| `load.py`        | Loading bank objects and transaction logs from file      |
+| `constants.py`   | Loads `MASTER_KEY` from environment                      |
 
 ---
 
@@ -76,88 +84,78 @@ banking-system/
 ### 🔧 Prerequisites
 
 - Python 3.x installed
-- Terminal or Command Prompt
+- `python-dotenv` if using `.env` file (optional)
 
-### 🛠️ Installation
+### 🛠️ Run Instructions
 
-1. Clone or download the project:
-
-```bash
-git clone https://github.com/yourusername/python-banking-system.git
-cd python-banking-system
-```
+1. Set a master key in your `.env` file:
+   ```env
+   MASTER_KEY=your_secure_admin_password
+   ```
 
 2. Run the program:
+   ```bash
+   python main.py
+   ```
 
-```bash
-python main.py
-```
+> 💡 You can also use a `run.bat` to execute from CMD on Windows.
 
 ---
 
 ## 🎮 How to Use
 
-1. On start, enter the number of accounts you want to create initially.
-2. Provide name, account number, password, and opening balance.
-3. Use the menu options to:
-   - Debit or credit money
-   - Transfer funds
-   - View balance
-   - View all accounts (with master key)
-4. Each operation may require password authentication for security.
-
-> ✅ Tip: Keep the account number and password handy. You’ll need them for authentication.
+- Upon first run, create new accounts if no saved files exist.
+- Navigate the menu to perform:
+  - Account transactions
+  - Fund transfers
+  - Balance checks
+  - Viewing/downloading details
+  - Deleting accounts (with file removal)
+- Admin-level access (via master key) is needed to:
+  - View all accounts
+  - Save/load all accounts
+  - Delete accounts (which also deletes their associated files)
 
 ---
 
 ## 🔐 Security
 
-- Each account is password-protected.
-- 3 chances are given for password attempts.
-- A **Master Key** allows admin-level access to view all accounts.
-- By default, master key is:
-
-```python
-__master_key = "khul ja sim sim"
-```
-
-> Change it in `constants.py` for added security.
+- Password-protected user accounts
+- Max 3 login attempts per session
+- Admin control via a `.env` file storing `MASTER_KEY`
+- No password is shown during typing (uses `getpass`)
+- **Encryption** is used for storing passwords securely, using the master key
 
 ---
 
 ## ⚠️ Known Limitations
 
-- ❌ No persistent storage — data is stored in-memory only (cleared on restart).
-- ❌ No GUI — runs purely in a terminal window.
-- ❌ No concurrency or multi-user support.
-- ❌ No input validation for account name or password complexity.
+- ❌ No GUI or web interface
+- ❌ File storage only — no database yet
+- ❌ No password strength validation
+- ❌ Not suitable for multi-user or concurrent environments
 
 ---
 
 ## 💡 Future Enhancements
 
-- 💾 Add file-based or database persistence (JSON/SQLite)
-- 🌐 Add a web-based front end (Flask or Django)
-- 🧪 Add unit tests for each module
-- 🛡️ Add password hashing and encryption
-- 📊 Export transaction history to files
+- 📦 Switch to SQLite or JSON for better data management
+- 🌐 Build a Flask-based web version
+- 🔐 Add password hashing with `bcrypt`
+- 🧾 PDF export of statements and receipts
+- 📊 Dashboard for insights and visualizations
+- 🧪 Add unit tests for reliability
 
 ---
 
 ## 📜 License
 
-This project is licensed under the **MIT License** — free to use, modify, and distribute.
+MIT License — feel free to use, modify, and distribute.
 
 ---
 
 ## 👨‍💻 Author
 
-**[Adrishikhar Chowhdury]**  
-Python Developer & Tech Enthusiast  
-📧 amiadrishikhar@gmail.com 
-🌐 [portfolio](adrishikharchowdhury.glitch.me)
-
----
-
-> “Code like you mean it. Debug like a detective. And document like a poet.” 💬
-```
+**Adrishikhar Chowdhury**  
+📧 amiadrishikhar@gmail.com  
+🌐 [Portfolio Website](https://adrishikharchowdhury.glitch.me)

@@ -1,53 +1,48 @@
-# account_ops.py
-
-from constants import infor, __master_key
+from getpass import getpass
+from constants import __master_key
 from bank_core import Bank
+from auth import uid_verification
+from utils import accountNoGenerator,acc_type,getEmail
 
-def acc_verification(num):
-    for elem in infor:
-        if elem['Bank_obj'].acc_no == num:
-            return False
-    return True
-
-def create_accounts():
+def create_accounts(infor):
     name = input("Enter the Account Holder name: ")
-    acc_number = input("Enter the account number: ")
-
-    if not acc_verification(acc_number):
-        print("Account number is already in use, please change it.")
-        return create_accounts()
+    acc_number = accountNoGenerator(name, infor)
 
     try:
-        acc_balance = float(input("Enter the account balance: "))
+        acc_balance = float(input("Enter the initial account balance: "))
     except ValueError:
         print("Invalid input. Please enter a number.")
-        return create_accounts()
+        return create_accounts(infor)
 
     if acc_balance < 0 or acc_balance > 50000:
         print("Invalid amount entered")
-        return create_accounts()
+        return create_accounts(infor)
 
-    pas = input("Register your password: ")
+    pas = getpass("Register your password: ")
+
     if pas == __master_key:
         print("Can't use this as a password, try again....")
-        return create_accounts()
+        return create_accounts(infor)
+    
+    uid = input("Enter your unique ID: ")
+    if not uid_verification(uid, infor):
+        print("This UID already exists. Try again with a new one.")
+        return create_accounts(infor)
+    
+    type=acc_type();
+    email=getEmail();
+    contact=input("Enter your contact number: ")
+    # Create a new Bank object and append it to the list
+    person = Bank(name,acc_number, acc_balance, pas, uid,type,email,contact)
+    print(f"Account created successfully with account number: {acc_number}")
+    return person
 
-    person = Bank(acc_number, acc_balance, pas)
-    info = {
-        "ID : #": len(infor) + 1,
-        "Name": name,
-        "Bank_obj": person
-    }
-    return info
-
-def authenticator(account):
-    count = 0
-    while count < 3:
-        pas = input(f"Enter your password (Holder: {account.acc_no}): ")
-        if pas == account.getpass() or pas == __master_key:
-            print("Successfully logged in.....")
-            return True
-        else:
-            print("Wrong password,", 2 - count, "tries left")
-        count += 1
-    return False
+def deleteAccounts(information):
+    accno=input("Enter the account number you want to delete: ")
+    for idx,bank_obj in enumerate(information):
+        if bank_obj.acc_no==accno:
+            information[idx].deleteFile()
+            del information[idx]
+            return
+    print("Account not found, Returning to menu........")
+    return

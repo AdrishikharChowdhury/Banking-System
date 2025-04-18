@@ -2,3 +2,7 @@
 __pycache__/
 .env
 venv/
+accounts/
+bank statements/
+transaction history/
+run.bat

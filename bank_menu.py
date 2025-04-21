@@ -3,6 +3,8 @@ from account_ops import create_accounts,deleteAccounts
 from transactions import debit_balance, credit_balance
 from getpass import getpass
 from auth import authenticator,passAuthenticator
+from database import loadDatabase,loadSingleAccount,updateBalance,updateInfoDB
+from update import updateInfo
 
 def bank_menu(infor):
     print("\nWelcome to the Bank")
@@ -17,9 +19,14 @@ def bank_menu(infor):
     print("9. Download Bank Statement")
     print("10. Create a new account")
     print("11. Delete an account")
-    print("12. Exit")
-    ch = int(input("Enter your choice: "))
-
+    print("12. Update the information of an account")
+    print("13. Load all the data to the database")
+    print("14. Exit")
+    try:
+        ch = int(input("Enter your choice: "))
+    except ValueError:
+        print("Wrong type of input")
+        return True
     match ch:
         case 1:  # Debit
             accno = input("Enter Account No. to debit from: ")
@@ -39,6 +46,7 @@ def bank_menu(infor):
             amount = float(input("Enter amount to debit: "))
             if debit_balance(account, amount):
                 print("Deduction successful!")
+                updateBalance(account)
             else:
                 print("Deduction failed.")
             return True
@@ -61,6 +69,7 @@ def bank_menu(infor):
             amount = float(input("Enter amount to credit: "))
             if credit_balance(account, amount):
                 print("Transaction successful!")
+                updateBalance(account)
             else:
                 print("Transaction failed.")
             return True
@@ -146,6 +155,8 @@ def bank_menu(infor):
                 print("\nTransfer successful!")
                 print(f"From Account {acc_no1} - New balance: {from_acc.balance()}")
                 print(f"To Account {acc_no2} - New balance: {to_acc.balance()}")
+                updateBalance(from_acc)
+                updateBalance(to_acc)
             else:
                 print("Insufficient balance in FROM account!")
             return True
@@ -192,6 +203,7 @@ def bank_menu(infor):
         case 10:  # Create a new account
             info = create_accounts(infor)
             infor.append(info)
+            loadSingleAccount(info)
             print("New account created successfully!")
             return True
         
@@ -199,13 +211,40 @@ def bank_menu(infor):
             deleteAccounts(infor)
             print("Account deleted successfully")
             return True
-
-        case 12:  # Exit
+        
+        case 12:
+            accno=input("Enter the account no. to update the information: ")
+            for bank_obj in infor:
+                if bank_obj.acc_no==accno:
+                    account=bank_obj
+                    break
+            if not account:
+                print("Account not found")
+                return True
+            
+            if not authenticator(account):
+                print("Access Denied")
+                return True
+            
+            updateInfo(account,infor)
+            updateInfoDB(account)
+            return True
+        
+        case 13:
+            loadDatabase(infor)
+            for bankInfo in infor:
+                updateBalance(bankInfo)
+            print("The Database is loaded with all the information needed")
+            return True
+        
+        case 14:  # Exit
             choice=input("Do you want to save the informations (y/n): ")
             if choice=='y' or choice=='Y':
                 for bankInfo in infor:
                     bankInfo.printToFile()
                     bankInfo.printTransactionHistory()
+                    updateBalance(bankInfo)
+                loadDatabase(infor)
             print("Thank you for using our banking system.")
             return False
 

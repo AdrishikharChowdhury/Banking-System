@@ -1,7 +1,6 @@
-
 # 🏦 Python Bank Management System
 
-A **modular, file-based terminal application** for managing bank operations. This project supports creating, updating, authenticating, saving, and deleting bank accounts, along with generating account statements and transaction histories — all securely handled in Python.
+A **modular, PostgreSQL-backed terminal application** for managing bank operations. This project supports creating, updating, authenticating, saving, and deleting bank accounts, along with generating account statements and transaction histories — all securely handled in Python.
 
 ---
 
@@ -23,41 +22,43 @@ A **modular, file-based terminal application** for managing bank operations. Thi
 
 ## 📌 Overview
 
-This project is a **fully terminal-driven Bank Management System** designed with modular architecture, persistence through CSV, and secure operations. Ideal for learning file operations, user authentication, modular programming, and system design in Python.
+This project is a **terminal-driven Bank Management System** designed with modular architecture, secure PostgreSQL-based storage, and robust authentication. It’s ideal for learning database interaction, system design, and modular programming in Python.
 
 ---
 
 ## ✨ Features
 
 - 🆕 Create New Bank Accounts with full details
+- 📝 Update Account Information (Name, Email, Contact, Type, Password, UID)
 - 🔐 Secure Password-Based Authentication
 - 🔁 Deposit, Withdraw, and Transfer Funds
 - 🔍 View Account Balance and Details
-- 📂 Save, Load, and Delete Account Files
+- 💾 PostgreSQL Database Integration for all operations
 - 📑 Print and Save Bank Statements
 - 🧾 View and Save Transaction Histories
 - 🛡️ Admin Mode for full data access via Master Key
-- 🗑️ Account Deletion (with file removal)
+- 🗑️ Account Deletion (including DB cleanup)
 - 🔄 Modular design with reusable utilities
 - 🔒 Secure Encryption and Decryption for Password Handling
 
 ---
 
 ## 🧱 Folder Structure
+
 ```
 Banking System/
-├── accounts/                # Stores saved account files
+├── accounts/                # (Deprecated) – Previously stored account files
 ├── bank statements/         # Stores printed statements
 ├── transaction history/     # Stores transaction logs
 ├── main.py                  # Entry point of the system
-├── bank_menu.py             # Main menu system
-├── account_ops.py           # Create/delete accounts
+├── bank_menu.py             # Menu system with database support
+├── account_ops.py           # Account creation/deletion/updates
 ├── bank_core.py             # Bank class and logic
 ├── transactions.py          # Credit/debit/transfer logic
 ├── utils.py                 # Utilities for email, UID, etc.
 ├── auth.py                  # Authentication and verification
-├── load.py                  # File loading functions
-├── constants.py             # Master key using dotenv
+├── load.py                  # Load logic (adapted to PostgreSQL)
+├── constants.py             # Master key and DB config via dotenv
 └── README.md
 ```
 
@@ -69,13 +70,13 @@ Banking System/
 |------------------|----------------------------------------------------------|
 | `main.py`        | Entry point of the application                           |
 | `bank_menu.py`   | Menu-driven routing of operations                        |
-| `account_ops.py` | Account creation and deletion                            |
-| `bank_core.py`   | `Bank` class with debit, credit, save, delete, print     |
-| `transactions.py`| Core transaction logic (debit/credit)                    |
-| `utils.py`       | Account number generation, email validation              |
-| `auth.py`        | User and master key authentication                       |
-| `load.py`        | Loading bank objects and transaction logs from file      |
-| `constants.py`   | Loads `MASTER_KEY` from environment                      |
+| `account_ops.py` | Create, delete, update accounts                          |
+| `bank_core.py`   | `Bank` class with methods for transactions & updates     |
+| `transactions.py`| Core logic for credit, debit, transfer                   |
+| `utils.py`       | Account number generator, email validator, etc.          |
+| `auth.py`        | Handles login, UID check, password validation            |
+| `load.py`        | PostgreSQL-based data loading                            |
+| `constants.py`   | Loads `MASTER_KEY` and DB config from `.env`             |
 
 ---
 
@@ -84,73 +85,82 @@ Banking System/
 ### 🔧 Prerequisites
 
 - Python 3.x installed
-- `python-dotenv` if using `.env` file (optional)
+- PostgreSQL Server running
+- `psycopg2` and `python-dotenv` installed:
+  ```bash
+  pip install psycopg2-binary python-dotenv
+  ```
 
-### 🛠️ Run Instructions
+### 🛠️ Setup
 
-1. Set a master key in your `.env` file:
+1. Create a `.env` file in your root directory:
+
    ```env
    MASTER_KEY=your_secure_admin_password
+   DB_NAME=your_db_name
+   DB_USER=your_db_user
+   DB_PASSWORD=your_db_password
+   DB_HOST=localhost
+   DB_PORT=5432
    ```
 
-2. Run the program:
+2. Ensure your `Bank` table is created in PostgreSQL with appropriate columns (e.g., `acc_no`, `name`, `email`, `contact`, `type`, `password`, `uid`, `acc_balance`, etc.)
+
+3. Run the app:
+
    ```bash
    python main.py
    ```
-
-> 💡 You can also use a `run.bat` to execute from CMD on Windows.
 
 ---
 
 ## 🎮 How to Use
 
-- Upon first run, create new accounts if no saved files exist.
-- Navigate the menu to perform:
-  - Account transactions
-  - Fund transfers
-  - Balance checks
-  - Viewing/downloading details
-  - Deleting accounts (with file removal)
-- Admin-level access (via master key) is needed to:
+- Navigate via terminal menu to:
+  - Create, Update, or Delete accounts
+  - Perform transactions and transfers
+  - View or download account details
+- Update features include:
+  - Name, Email, Contact Number, Account Type, Password, and UID
+- Admin (via master key) can:
   - View all accounts
-  - Save/load all accounts
-  - Delete accounts (which also deletes their associated files)
+  - Perform global database operations
 
 ---
 
 ## 🔐 Security
 
-- Password-protected user accounts
+- Password-masked input using `getpass`
+- Admin key stored securely via `.env`
 - Max 3 login attempts per session
-- Admin control via a `.env` file storing `MASTER_KEY`
-- No password is shown during typing (uses `getpass`)
-- **Encryption** is used for storing passwords securely, using the master key
+- Encrypted storage of passwords (basic encryption; upgrade recommended)
+- UID validation to ensure uniqueness
 
 ---
 
 ## ⚠️ Known Limitations
 
-- ❌ No GUI or web interface
-- ❌ File storage only — no database yet
-- ❌ No password strength validation
-- ❌ Not suitable for multi-user or concurrent environments
+- ❌ No GUI or web interface yet
+- ❌ No password strength or reset mechanism
+- ❌ Minimal error handling on DB failures
+- ❌ No concurrent session or multi-user support
 
 ---
 
 ## 💡 Future Enhancements
 
-- 📦 Switch to SQLite or JSON for better data management
-- 🌐 Build a Flask-based web version
-- 🔐 Add password hashing with `bcrypt`
-- 🧾 PDF export of statements and receipts
-- 📊 Dashboard for insights and visualizations
-- 🧪 Add unit tests for reliability
+- 🛢️ Add connection pooling and transaction rollback
+- 🔐 Replace encryption with `bcrypt` for password hashing
+- 🧪 Add unit and integration tests
+- 🖥️ Flask or FastAPI web interface
+- 📊 Admin dashboard with account analytics
+- 📄 PDF exports for statements and logs
 
 ---
 
 ## 📜 License
 
-MIT License — feel free to use, modify, and distribute.
+MIT License — free to use, modify, and distribute.
 
 ---
 

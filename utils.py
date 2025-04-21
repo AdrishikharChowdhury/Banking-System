@@ -1,7 +1,7 @@
 import random
 import hashlib
 from auth import acc_verification
-from constants import f
+from constants import f,key
 
 def getEmail():
     while True:
@@ -46,8 +46,6 @@ def accountNoGenerator(name, infor):
         if acc_verification(acc_number, infor):
             return acc_number
 
-
-
 def encrypt(msg):
     # Ensure the msg is in bytes before encrypting
     msg_bytes = msg.encode('utf-8')  # Convert the message to bytes
@@ -55,12 +53,15 @@ def encrypt(msg):
 
 def decrypt(msg):
     try:
-        # If the message is a string that represents a byte string, convert it properly
         if isinstance(msg, str):
-            msg = eval(msg)  # Evaluates the string into a byte string
+            if msg.startswith('\\x'):
+                # Decode PostgreSQL hex bytea format
+                msg = bytes.fromhex(msg[2:])
+            else:
+                msg = msg.encode('utf-8')
 
         decrypted_msg = f.decrypt(msg).decode('utf-8')
         return decrypted_msg
     except Exception as e:
-        print(f"Decryption failed: {e}")
+        print(f"Decryption failed: {type(e).__name__} - {e}")
         return None

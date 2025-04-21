@@ -1,9 +1,10 @@
 from account_ops import create_accounts
 from bank_menu import bank_menu
 from load import loadFromFile
+from database import loadFromDatabase
 
 def main():
-    information=loadFromFile()
+    information=loadFromDatabase()
     if information==[]:
         try:
             n = int(input("Enter the number of bank accounts you want to create initially: "))

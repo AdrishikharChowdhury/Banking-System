@@ -3,6 +3,7 @@ from constants import __master_key
 from bank_core import Bank
 from auth import uid_verification
 from utils import accountNoGenerator,acc_type,getEmail
+from database import deleteAccount
 
 def create_accounts(infor):
     name = input("Enter the Account Holder name: ")
@@ -43,6 +44,7 @@ def deleteAccounts(information):
         if bank_obj.acc_no==accno:
             information[idx].deleteFile()
             del information[idx]
+            deleteAccount(bank_obj)
             return
     print("Account not found, Returning to menu........")
     return
